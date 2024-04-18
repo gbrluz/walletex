@@ -1,6 +1,5 @@
 import { createApp, h } from 'vue'
 import { Quasar } from 'quasar'
-import routes from './router/router.js'
 import App from './App.vue'
 
 // Import icon libraries
@@ -10,6 +9,7 @@ import '@quasar/extras/bootstrap-icons/bootstrap-icons.css'
 
 // Import Quasar css
 import 'quasar/src/css/index.sass'
+import router from './router'
 
 
 // Assumes your root component is App.vue
@@ -23,7 +23,7 @@ const myApp = createApp({
 	render: () => h(App)
   })
 
-myApp.use(Quasar).use(routes)
+myApp.use(Quasar).use(router)
 
 // Assumes you have a <div id="app"></div> in your index.html
 myApp.mount('#app')
