@@ -25,6 +25,5 @@ const myApp = createApp({
 
 myApp.use(Quasar).use(router)
 
-// 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
 // Assumes you have a <div id="app"></div> in your index.html
 myApp.mount('#app')
