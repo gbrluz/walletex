@@ -2,21 +2,43 @@
   <div id="container">
     <h5>Transações</h5>
 
+    <h3>R$ {{ soma }}</h3>
 
-
-    <h3></h3>
-    {{ soma }}
-
-    <!-- <p>
-  Ask a yes/no question:
-  <input v-model="row" :disabled="loading" />
-</p> -->
-<p>{{ answer }}</p>
     <br />
 
-    <q-btn color="blue" @click="addItem('maça','2121','23123')">INCLUIR TRANSAÇÃO</q-btn>
+    <q-btn label="INSERIR TRANSAÇÃO" color="blue" @click="alert = true" />
     &nbsp;
-    <q-btn color="blue" @click="removeItem('maça','2121','23123')">DELETAR TRANSAÇÃO</q-btn>
+    <q-btn
+      label="DELETAR TRANSAÇÃO"
+      color="blue"
+      @click="removeItem(selected)"
+    />
+
+    <br />
+
+    <q-dialog v-model="alert">
+      <q-card>
+        <q-card-section>
+          <div class="text-h6">Insira os dados</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <q-input outlined v-model="name" label="Nome"></q-input>
+
+          <q-input outlined v-model="price" label="Preço"></q-input>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn
+            flat
+            label="OK"
+            color="primary"
+            v-close-popup
+            @click="addItem(name, price)"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
 
     <div>
       <q-table
@@ -24,12 +46,18 @@
         :rows="rows"
         :columns="columns"
         row-key="name"
+        :selected-rows-label="getSelectedString"
+        selection="multiple"
+        v-model:selected="selected"
       />
     </div>
+    <div class="q-mt-md">Selected: {{ JSON.stringify(selected) }}</div>
   </div>
 </template>
 
 <script>
+import { ref } from "vue";
+
 const columns = [
   { name: "name", label: "Nome", field: "name", align: "center" },
   { name: "price", label: "Preço", field: "price" },
@@ -74,77 +102,44 @@ export default {
     return {
       columns,
       rows,
-      row: '',
-      answer: 'Questions usually contain a question mark. ;-)',
-      loading: false
+      selected: [],
+      alert: false,
+      name: ref(''),
+      price: ref('')
     };
   },
+
   computed: {
     soma() {
-      return this.rows.reduce((acc,item)=> {
-        acc+=Number(item.price)
-        return acc
-      },0);
-    }
-  },
-
-  watch: {
-    // whenever question changes, this function will run
-    rows: {
-      handler(newQuestion, oldQuestion) {
-      console.log("aqui")
-      if (newQuestion.includes('?')) {
-        console.log("aaaa")
-      }
+      return this.rows.reduce((acc, item) => {
+        acc += Number(item.price);
+        return acc;
+      }, 0);
     },
-      deep: true
-    }
-
   },
-  // watch:{
-  //   rows(item,newItem) {
-  //     console.log("aqui")
-  //     if (item.includes()) {
-  //       console.log("aqui")
-  //       this.getItems()
-  //     }
-  //   }
-  // },
+
   methods: {
-    async getItems () {
-      console.log("methods")
-      return rows;
+    addItem(name, price) {
+      const data = new Date(Date.now()).toLocaleDateString();
+      this.rows.push({ name, price, data });
+      console.log(data);
     },
-    addItem(name, price, data) {
-      this.rows.push({name,price,data})
-      console.log(rows)
+    removeItem(selected) {
+      this.rows.splice(selected, 1);
+      // console.log(selected)
     },
-    removeItem(item) {
-      this.rows.splice(item[0],1)
-      console.log(rows)
+    getSelectedString() {
+      return this.selected.length === 0 ? "" : `${this.selected.length} record${
+            this.selected.length > 1 ? "s" : ""
+          } selected of ${rows.length}`;
     },
-    async getAnswer() {
-      this.loading = true
-      this.answer = 'Thinking...'
-      try {
-        const res = await fetch('https://yesno.wtf/api')
-        this.answer = (await res.json()).answer
-      } catch (error) {
-        this.answer = 'Error! Could not reach the API. ' + error
-      } finally {
-        this.loading = false
-      }
-    }
   },
-  
 };
 </script>
 
-
 <style scoped>
-
 #container {
-  padding: 20%
+  padding-left: 20%;
+  padding-right: 20%;
 }
-
 </style>
