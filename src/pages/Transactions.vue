@@ -11,12 +11,12 @@
     <q-btn
       label="DELETAR TRANSAÇÃO"
       color="blue"
-      @click="removeItem(selected)"
+      @click="removeItem(rows[id])"
     />
 
     <br />
 
-    <q-dialog v-model="alert">
+    <q-dialog v-model="alert" v-on:keyup.enter="addItem(name, price) ; v-close-popup" >
       <q-card>
         <q-card-section>
           <div class="text-h6">Insira os dados</div>
@@ -42,16 +42,14 @@
 
     <div>
       <q-table
-        title="Ultimos 30 dias"
-        :rows="rows"
-        :columns="columns"
-        row-key="name"
-        :selected-rows-label="getSelectedString"
-        selection="multiple"
-        v-model:selected="selected"
+      flat bordered
+      title="Ultimos 30 dias"
+      :rows="rows"
+      :columns="columns"
+      row-key="id"
+      :rows-per-page-options="[0]"
       />
     </div>
-    <div class="q-mt-md">Selected: {{ JSON.stringify(selected) }}</div>
   </div>
 </template>
 
@@ -59,6 +57,7 @@
 import { ref } from "vue";
 
 const columns = [
+  { name: "id", label: "#", field: "id"},
   { name: "name", label: "Nome", field: "name", align: "center" },
   { name: "price", label: "Preço", field: "price" },
   { name: "data", label: "Data", field: "data" },
@@ -66,31 +65,37 @@ const columns = [
 
 const rows = [
   {
+    id: 1,
     name: "Lanche",
     price: "12.33",
     data: "12/03/2024",
   },
   {
+    id: 2,
     name: "Academia",
     price: "109.90",
     data: "10/03/2024",
   },
   {
+    id: 3,
     name: "Posto",
     price: "220.00",
     data: "07/03/2024",
   },
   {
+    id: 4,
     name: "Mercado",
     price: "158.78",
     data: "03/03/2024",
   },
   {
+    id: 5,
     name: "Roupa",
     price: "198.90",
     data: "01/03/2024",
   },
   {
+    id: 6,
     name: "Roupa",
     price: "198.90",
     data: "01/03/2024",
@@ -122,17 +127,13 @@ export default {
     addItem(name, price) {
       const data = new Date(Date.now()).toLocaleDateString();
       this.rows.push({ name, price, data });
-      console.log(data);
+      name = "";
+      price = "";
     },
-    removeItem(selected) {
-      this.rows.splice(selected, 1);
-      // console.log(selected)
-    },
-    getSelectedString() {
-      return this.selected.length === 0 ? "" : `${this.selected.length} record${
-            this.selected.length > 1 ? "s" : ""
-          } selected of ${rows.length}`;
-    },
+    removeItem(id) {
+      // this.rows.splice(rows.indexOf(2));
+      console.log(rows.filter(e=> e.id=2))
+    }
   },
 };
 </script>
