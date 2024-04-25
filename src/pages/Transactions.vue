@@ -6,12 +6,15 @@
 
     <br />
 
-    <q-btn label="INSERIR TRANSAÇÃO" color="blue" @click="alert = true" />
+    <q-btn 
+      label="INSERIR TRANSAÇÃO" 
+      color="blue" 
+      @click="alert = true" />
     &nbsp;
     <q-btn
       label="DELETAR TRANSAÇÃO"
       color="blue"
-      @click="removeItem(rows[id])"
+      @click="removeItem(transactions[id])"
     />
 
     <br />
@@ -44,7 +47,7 @@
       <q-table
       flat bordered
       title="Ultimos 30 dias"
-      :rows="rows"
+      :rows="transactions"
       :columns="columns"
       row-key="id"
       :rows-per-page-options="[0]"
@@ -55,6 +58,7 @@
 
 <script>
 import { ref } from "vue";
+import axios from "axios";
 
 const columns = [
   { name: "id", label: "#", field: "id"},
@@ -63,50 +67,12 @@ const columns = [
   { name: "data", label: "Data", field: "data" },
 ];
 
-const rows = [
-  {
-    id: 1,
-    name: "Lanche",
-    price: "12.33",
-    data: "12/03/2024",
-  },
-  {
-    id: 2,
-    name: "Academia",
-    price: "109.90",
-    data: "10/03/2024",
-  },
-  {
-    id: 3,
-    name: "Posto",
-    price: "220.00",
-    data: "07/03/2024",
-  },
-  {
-    id: 4,
-    name: "Mercado",
-    price: "158.78",
-    data: "03/03/2024",
-  },
-  {
-    id: 5,
-    name: "Roupa",
-    price: "198.90",
-    data: "01/03/2024",
-  },
-  {
-    id: 6,
-    name: "Roupa",
-    price: "198.90",
-    data: "01/03/2024",
-  },
-];
 
 export default {
   data() {
     return {
       columns,
-      rows,
+      transactions: [],
       selected: [],
       alert: false,
       name: ref(''),
@@ -116,7 +82,7 @@ export default {
 
   computed: {
     soma() {
-      return this.rows.reduce((acc, item) => {
+      return this.transactions.reduce((acc, item) => {
         acc += Number(item.price);
         return acc;
       }, 0);
@@ -126,15 +92,37 @@ export default {
   methods: {
     addItem(name, price) {
       const data = new Date(Date.now()).toLocaleDateString();
-      this.rows.push({ name, price, data });
+      this.transactions.push({ name, price, data });
       name = "";
       price = "";
     },
     removeItem(id) {
-      // this.rows.splice(rows.indexOf(2));
-      console.log(rows.filter(e=> e.id=2))
+      this.transactions.splice(transactions.indexOf(2));
+      // console.log(rows.filter(e=> e.id=2))
     }
   },
+  created() {
+    axios({
+      url: "http://localhost:4000",
+      method: "post",
+      data: {
+        query: `
+        {
+          transactions {
+            id
+            name
+            price
+            data
+          }
+        }
+        `
+      }
+    }).then(response=> {
+      const query = response.data;
+      this.transactions = query.data.transactions
+      console.log(query.data)
+    })
+  }
 };
 </script>
 
