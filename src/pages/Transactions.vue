@@ -188,10 +188,10 @@ export default {
       },
     }).then((response) => {
       const query = response.data;
-      
-
       this.transactions = query.data.transactions;
-      // console.log(query.data.transactions);
+      const newDate = new Date(this.transactions[2].data).toLocaleDateString
+      console.log(newDate)
+      
     });
     }
   },

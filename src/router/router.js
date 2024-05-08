@@ -4,19 +4,23 @@ import {Settings} from '../pages'
 
 const routes = [
     {
-        path: '/transactions',
-        name: 'Transactions',
+        path: '/Transações',
+        name: 'Transações',
         component: Transactions
     },
     {
-        path: '/wallet',
-        name: 'Wallet',
+        path: '/carteira',
+        name: 'Carteira',
         component: Wallet
     },
     {
-        path: '/settings',
-        name: 'Settings',
+        path: '/Configurações',
+        name: 'Configurações',
         component: Settings
+    },
+    {
+        path: '/',
+        redirect:"/carteira"
     }
 ]
 

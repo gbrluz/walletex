@@ -1,5 +1,5 @@
 <template>
-    <h5>Your Settings</h5>
+    <h5>Seu Perfil</h5>
 </template>
 
 <script>
