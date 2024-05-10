@@ -80,7 +80,7 @@
         flat
         bordered
         title="Ultimos 30 dias"
-        :rows="transactions"
+        :rows="rows"
         :columns="columns"
         row-key="id"
         :rows-per-page-options="[0]"
@@ -105,6 +105,7 @@ export default {
     return {
       columns,
       transactions: [],
+      rows: [],
       selected: [],
       alert: false,
       deleteItem: false,
@@ -189,9 +190,14 @@ export default {
     }).then((response) => {
       const query = response.data;
       this.transactions = query.data.transactions;
-      const newDate = new Date(this.transactions[2].data).toLocaleDateString
-      console.log(newDate)
-      
+
+      this.rows = this.transactions.map(transacao => {
+        const date = new Date(transacao.data).toLocaleDateString('pt-BR');
+        return{
+          ...transacao,
+          data: date
+        }
+      })
     });
     }
   },
